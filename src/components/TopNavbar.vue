@@ -128,7 +128,7 @@ const rightNavLinks = [
   justify-content: space-between;
   max-width: 1440px;
   margin: 0 auto;
-  padding: 8px 16px;
+  padding: 0 16px;
   height: 100%;
 }
 

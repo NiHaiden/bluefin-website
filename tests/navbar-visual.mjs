@@ -16,6 +16,21 @@ const SCREENSHOT = '/tmp/nav-test-result.png'
 const VIEWPORT = { width: 1440, height: 900 }
 
 // ── Expected values ────────────────────────────────────────────────────────────
+// Pixel-accurate measurements from docs.projectbluefin.io @ 1440×900 dark-mode
+// Captured 2026-05-11 via getBoundingClientRect()
+const EXPECTED_LOGO_HEIGHT = '32px'
+const EXPECTED_BRAND_MARGIN_RIGHT = '16px'
+const EXPECTED_BRAND_GAP = '8px'              // explicit; docs renders same 8px visually
+const EXPECTED_LINK_PADDING_TOP = '4px'
+const EXPECTED_LINK_PADDING_BOTTOM = '4px'
+const EXPECTED_LINK_PADDING_LEFT = '12px'
+const EXPECTED_LINK_PADDING_RIGHT = '12px'
+const EXPECTED_LOGO_TO_TITLE_GAP_MIN = 7      // px — allow ±1px for sub-pixel
+const EXPECTED_LOGO_TO_TITLE_GAP_MAX = 9
+const EXPECTED_WITHIN_GROUP_GAP_MAX = 1       // px — links in same group touch (0px)
+const EXPECTED_INNER_PADDING_VERTICAL = '0px' // matches docs; align-items:center handles centering
+const EXPECTED_NAVBAR_HEIGHT = '60px'
+
 const EXPECTED_LINKS = [
   'Documentation',
   'Ask Bluefin',
@@ -49,6 +64,23 @@ function assert(label, actual, expected) {
     console.log(`  ${status}  ${label}`)
     console.log(`           expected: ${expected}`)
     console.log(`           got:      ${actual}`)
+  }
+  return ok
+}
+
+function assertRange(label, actual, min, max) {
+  const ok = actual >= min && actual <= max
+  const status = ok ? '✅ PASS' : '❌ FAIL'
+  if (ok) {
+    passed++
+    console.log(`  ${status}  ${label}`)
+    console.log(`           got: ${actual} (range ${min}–${max})`)
+  }
+  else {
+    failed++
+    console.log(`  ${status}  ${label}`)
+    console.log(`           expected range: ${min}–${max}`)
+    console.log(`           got:            ${actual}`)
   }
   return ok
 }
@@ -149,11 +181,12 @@ if (!brandHandle) {
   failed++
 }
 else {
-  const brandMarginRight = await page.evaluate(
-    el => window.getComputedStyle(el).marginRight,
-    brandHandle,
-  )
-  assert('.navbar__brand  marginRight', brandMarginRight, '16px')
+  const brandStyles = await page.evaluate((el) => {
+    const cs = window.getComputedStyle(el)
+    return { marginRight: cs.marginRight, gap: cs.gap }
+  }, brandHandle)
+  assert('.navbar__brand  marginRight', brandStyles.marginRight, EXPECTED_BRAND_MARGIN_RIGHT)
+  assert('.navbar__brand  gap', brandStyles.gap, EXPECTED_BRAND_GAP)
 }
 
 const logoImgHandle = await page.$('.navbar__logo img')
@@ -166,7 +199,7 @@ else {
     el => window.getComputedStyle(el).height,
     logoImgHandle,
   )
-  assert('.navbar__logo img  height', logoHeight, '32px')
+  assert('.navbar__logo img  height', logoHeight, EXPECTED_LOGO_HEIGHT)
 }
 
 const docusaurusNavHandle = await page.$('.docusaurus-navbar')
@@ -179,7 +212,96 @@ else {
     el => window.getComputedStyle(el).height,
     docusaurusNavHandle,
   )
-  assert('.docusaurus-navbar  height', navHeight, '60px')
+  assert('.docusaurus-navbar  height', navHeight, EXPECTED_NAVBAR_HEIGHT)
+}
+
+// ── Section 4b: pixel-accurate spacing (docs-baseline measurements) ────────────
+console.log('\n── Section 4b: pixel-accurate spacing (docs-baseline) ──')
+
+const spacingData = await page.evaluate(() => {
+  const logoImg = document.querySelector('.navbar__logo img')
+  const title = document.querySelector('.navbar__title')
+  const firstLink = document.querySelector('.navbar__link')
+  const leftItems = document.querySelector('.navbar__items:not(.navbar__items--right)')
+  const rightItems = document.querySelector('.navbar__items--right')
+  const inner = document.querySelector('.navbar__inner')
+
+  const r = el => el ? el.getBoundingClientRect() : null
+  const cs = el => el ? window.getComputedStyle(el) : null
+
+  const logoRect = r(logoImg)
+  const titleRect = r(title)
+  const logoToTitle = (logoRect && titleRect) ? titleRect.left - logoRect.right : null
+
+  const allLinks = [...document.querySelectorAll('.navbar__link')]
+  const leftLinks = allLinks.filter(el => !el.closest('.navbar__items--right'))
+  const rightLinks = allLinks.filter(el => !!el.closest('.navbar__items--right'))
+
+  // Gap between last left link and first right link
+  const lastLeft = leftLinks.length ? r(leftLinks[leftLinks.length - 1]) : null
+  const firstRight = rightLinks.length ? r(rightLinks[0]) : null
+  const middleGap = (lastLeft && firstRight) ? firstRight.left - lastLeft.right : null
+
+  // Within-group gaps: check all adjacent left links and adjacent right links
+  const leftGaps = []
+  for (let i = 0; i < leftLinks.length - 1; i++) {
+    leftGaps.push(r(leftLinks[i + 1]).left - r(leftLinks[i]).right)
+  }
+  const rightGaps = []
+  for (let i = 0; i < rightLinks.length - 1; i++) {
+    rightGaps.push(r(rightLinks[i + 1]).left - r(rightLinks[i]).right)
+  }
+
+  const innerCs = cs(inner)
+  const firstLinkCs = cs(firstLink)
+
+  return {
+    logoToTitle,
+    middleGap,
+    leftGaps,
+    rightGaps,
+    innerPaddingTop: innerCs?.paddingTop,
+    innerPaddingBottom: innerCs?.paddingBottom,
+    linkPaddingTop: firstLinkCs?.paddingTop,
+    linkPaddingBottom: firstLinkCs?.paddingBottom,
+    linkPaddingLeft: firstLinkCs?.paddingLeft,
+    linkPaddingRight: firstLinkCs?.paddingRight,
+  }
+})
+
+if (spacingData.logoToTitle !== null) {
+  assertRange(
+    `logo → title gap (docs baseline: 8px ±1)`,
+    spacingData.logoToTitle,
+    EXPECTED_LOGO_TO_TITLE_GAP_MIN,
+    EXPECTED_LOGO_TO_TITLE_GAP_MAX,
+  )
+}
+else {
+  console.log('  ❌ FAIL  could not compute logo→title gap (elements missing)')
+  failed++
+}
+
+assert('.navbar__inner  paddingTop', spacingData.innerPaddingTop, EXPECTED_INNER_PADDING_VERTICAL)
+assert('.navbar__inner  paddingBottom', spacingData.innerPaddingBottom, EXPECTED_INNER_PADDING_VERTICAL)
+assert('.navbar__link  paddingTop', spacingData.linkPaddingTop, EXPECTED_LINK_PADDING_TOP)
+assert('.navbar__link  paddingBottom', spacingData.linkPaddingBottom, EXPECTED_LINK_PADDING_BOTTOM)
+assert('.navbar__link  paddingLeft', spacingData.linkPaddingLeft, EXPECTED_LINK_PADDING_LEFT)
+assert('.navbar__link  paddingRight', spacingData.linkPaddingRight, EXPECTED_LINK_PADDING_RIGHT)
+
+console.log(`  ℹ️   Middle gap (left↔right groups): ${spacingData.middleGap?.toFixed(1)}px`)
+console.log(`       (docs=140.4px; local uses full viewport width — layout diff, not a bug)`)
+
+const allWithinGroupGaps = [...spacingData.leftGaps, ...spacingData.rightGaps]
+if (allWithinGroupGaps.length > 0) {
+  const maxGap = Math.max(...allWithinGroupGaps)
+  assertRange(
+    `max within-group link gap ≤ ${EXPECTED_WITHIN_GROUP_GAP_MAX}px (links touch within their group)`,
+    maxGap,
+    -Infinity,
+    EXPECTED_WITHIN_GROUP_GAP_MAX,
+  )
+  console.log(`       (individual within-group gaps: [${allWithinGroupGaps.map(g => g.toFixed(1)).join(', ')}])`)
 }
 
 // ── Section 5: active link styling ───────────────────────────────────────────
