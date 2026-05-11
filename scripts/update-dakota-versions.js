@@ -15,6 +15,7 @@
  * main, NOT from any local fork or feature branch.
  */
 
+import { Buffer } from 'node:buffer'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -46,15 +47,20 @@ async function main() {
         const pv = latest.packageVersions ?? {}
         const all = pv.allPackages ?? {}
         // Top-level packageVersions fields
-        if (pv.kernel) { current.packages.kernel = pv.kernel }
-        if (pv.gnome) { current.packages.gnome = pv.gnome }
-        if (pv.mesa) { current.packages.mesa = pv.mesa }
-        if (pv.systemd) { current.packages.systemd = pv.systemd }
-        if (pv.podman) { current.packages.podman = pv.podman }
-        if (pv.pipewire) { current.packages.pipewire = pv.pipewire }
-        if (pv.flatpak) { current.packages.flatpak = pv.flatpak }
+        const assign = (key, val) => {
+          if (val) {
+            current.packages[key] = val
+          }
+        }
+        assign('kernel', pv.kernel)
+        assign('gnome', pv.gnome)
+        assign('mesa', pv.mesa)
+        assign('systemd', pv.systemd)
+        assign('podman', pv.podman)
+        assign('pipewire', pv.pipewire)
+        assign('flatpak', pv.flatpak)
         // bootc lives in allPackages
-        if (all.bootc) { current.packages.bootc = all.bootc }
+        assign('bootc', all.bootc)
         current.generatedAt = new Date().toISOString()
         console.info('[dakota-versions] SBOM versions updated')
       }
@@ -72,7 +78,9 @@ async function main() {
     const bstRes = await fetch(FDSDK_BST_URL, { headers })
     if (bstRes.ok) {
       const { content, encoding } = await bstRes.json()
-      const raw = encoding === 'base64' ? Buffer.from(content, 'base64').toString() : content
+      const raw = encoding === 'base64'
+        ? Buffer.from(content, 'base64').toString()
+        : content
       // ref: freedesktop-sdk-25.08.10-0-g...
       const match = raw.match(/ref:\s*freedesktop-sdk-([\d.]+)/)
       if (match) {
