@@ -53,9 +53,13 @@ import {
                   <div class="icon-wrap">
                     <IconSourceBranch />
                   </div>
-                  <a class="brand-title" href="https://buildstream.build" target="_blank" rel="noopener noreferrer">BuildStream 2</a>
+                  <span class="brand-title">
+                    <a href="https://buildstream.build" target="_blank" rel="noopener noreferrer">BuildStream</a>
+                    &amp;
+                    <a href="https://buildgrid.build" target="_blank" rel="noopener noreferrer">BuildGrid</a>
+                  </span>
                 </div>
-                <p>Hermetic sandbox builds, reproducible and fully auditable</p>
+                <p>Hermetic sandbox builds with distributed execution, reproducible and fully auditable</p>
               </div>
             </div>
           </div>
@@ -120,6 +124,16 @@ import {
     &[href]:hover {
       text-decoration: underline;
       opacity: 0.85;
+    }
+
+    a {
+      color: var(--color-text-light);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+        opacity: 0.85;
+      }
     }
   }
 
