@@ -150,23 +150,36 @@ npm run lint:fix
 ├── .github/workflows/         # CI/CD pipelines
 │   ├── deploy.yml            # GitHub Pages deployment (on push to main, releases)
 │   └── update-content.yml    # Daily auto-update: stream-versions.yml + growth chart SVG
+├── dakota/
+│   └── index.html            # Dakota sub-page entry (noindex, OG tags)
+├── tests/
+│   └── navbar-visual.mjs     # Playwright navbar assertions (38 tests)
 ├── public/                   # Static assets
 │   ├── characters/           # Character artwork (.webp)
 │   ├── brands/              # Brand logos (.svg, .png)
 │   ├── evening/             # Background images
+│   │   └── night-sky.webp   # Dakota background
 │   ├── favicons/            # Site icons
+│   ├── dakota-versions.json  # Version chip data (seeded; CI update TODO)
 │   └── testing.html         # Testing page (also built to dist/public/)
 ├── src/
 │   ├── components/          # Vue components
 │   │   ├── scenes/         # Major page sections (3 components)
 │   │   ├── sections/       # Smaller reusable sections (8 components)
-│   │   └── common/         # Shared components (4 components)
+│   │   ├── common/         # Shared components (4 components)
+│   │   └── dakota/         # Dakota-specific components
+│   │       ├── DakotaScene.vue
+│   │       ├── DakotaHighlights.vue
+│   │       ├── DakotaDownloadCard.vue
+│   │       └── DakotaVersionChips.vue
 │   ├── locales/            # i18n translation files (13 JSON files)
 │   ├── style/              # SCSS styling
 │   │   ├── setup/          # Mixins, variables, fonts, reset
 │   │   └── app/            # Component-specific styles
 │   ├── content.ts          # Main content constants
 │   ├── composables.ts      # Vue composables
+│   ├── DakotaApp.vue       # Dakota page root component
+│   ├── dakota-main.ts      # Dakota app entry point
 │   └── main.ts            # App entry point
 ├── package.json            # Dependencies and scripts
 ├── vite.config.ts         # Vite configuration (multi-page: index.html + testing.html)
@@ -240,6 +253,7 @@ const isVisible = ref(false)
 **Sections (8):** `SectionBazaar.vue`, `SectionCommunity.vue`, `SectionFooter.vue`, `SectionMission.vue`, `SectionNews.vue`, `SectionPicker.vue`, `SectionVideo.vue`, `ParallaxWrapper.vue`
 **Common (4):** `SceneContent.vue`, `SceneQuote.vue`, `SceneVisibilityChecker.vue`, `TextArrow.vue`
 **Root Components (5):** `Navigation.vue`, `TopNavbar.vue`, `PageLoading.vue`, `ImageChooser.vue`, `RssFeed.vue`
+**Dakota (4):** `DakotaScene.vue`, `DakotaHighlights.vue`, `DakotaDownloadCard.vue`, `DakotaVersionChips.vue`
 
 ## Content Management
 
@@ -277,6 +291,9 @@ export const LangSectionTitle = 'Default English Text'
 - Maintain consistent voice that reflects Bluefin's mission and character
 
 ## Data Pipeline
+
+### Dakota Versions (`public/dakota-versions.json`)
+Fetched client-side by `DakotaVersionChips.vue`. Contains kernel/gnome/freedesktop-sdk/mesa/bootc/nvidia/systemd/podman/pipewire/flatpak/baseline versions. Currently seeded with SBOM data. TODO: wire into CI auto-update via `update-content.yml`.
 
 ### Stream Versions (`public/stream-versions.yml`)
 Fetched **client-side at runtime** by `ImageChooser.vue` via `fetch('/stream-versions.yml')`. Contains kernel/gnome/mesa/nvidia/hwe versions for each stream. Updated daily at 08:00 UTC by `update-content.yml` which parses GitHub Release markdown tables from `ublue-os/bluefin` and `ublue-os/bluefin-lts`. Parsing is fragile (format-dependent) — see TODO comment in `scripts/update-stream-versions.js` for the proper SBOM-based fix.
@@ -410,6 +427,10 @@ npm run lint:fix             # Lints and fixes issues in the project
 - **Always** ensure images are compressed appropriately for mobile
 - **Always** do surgical improvements, keep it simple and readable
 - **Always** match conventions that exist, like font sizes and visual style
+- 🌐 **vue-i18n is in LEGACY mode:** use `(i18n.global as any).locale = x` — NOT `.locale.value = x` (will silently no-op)
+- 📐 **TopNavbar uses `px` not `rem`** — site root font-size is 63.5% (~10 px base); pixel values in Navbar are intentional
+- 🔒 **Dakota page is `noindex` / unlisted** — intentionally hidden from search engines and nav; do not add to sitemap or main nav
+- ✅ **Run `node tests/navbar-visual.mjs`** to validate navbar rendering against docs.projectbluefin.io (38 Playwright assertions)
 
 ### Attribution Requirements
 
