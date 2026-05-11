@@ -10,6 +10,8 @@ const LABELS: Record<string, string> = {
   kernel: 'Kernel',
   gnome: 'GNOME',
   mesa: 'Mesa',
+  bootc: 'bootc',
+  nvidia: 'Nvidia',
   systemd: 'systemd',
   podman: 'Podman',
   pipewire: 'PipeWire',
