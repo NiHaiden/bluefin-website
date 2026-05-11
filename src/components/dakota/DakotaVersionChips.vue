@@ -7,6 +7,7 @@ interface DakotaVersions {
 }
 
 const LABELS: Record<string, string> = {
+  baseline: 'x86-64',
   kernel: 'Kernel',
   gnome: 'GNOME',
   mesa: 'Mesa',
