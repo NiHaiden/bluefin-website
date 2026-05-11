@@ -19,6 +19,7 @@ const leftNavLinks = [
 const rightNavLinks = [
   { name: t('TopBar.Blog'), href: 'https://docs.projectbluefin.io/blog' },
   { name: t('TopBar.Changelog'), href: 'https://docs.projectbluefin.io/changelogs' },
+  { name: t('TopBar.Reports'), href: 'https://docs.projectbluefin.io/reports' },
   {
     name: t('TopBar.Discussions'),
     href: 'https://github.com/ublue-os/bluefin/discussions',
@@ -52,6 +53,7 @@ const rightNavLinks = [
           :key="link.name"
           :href="link.href"
           class="navbar__item navbar__link"
+          :class="{ 'navbar__link--active': link.name === t('TopBar.Docs') }"
           :target="link.external ? '_blank' : undefined"
           :rel="link.external ? 'noopener noreferrer' : undefined"
         >
@@ -192,7 +194,7 @@ const rightNavLinks = [
 .navbar__link {
   color: var(--ifm-navbar-link-color);
   text-decoration: none;
-  font-size: 12pt;
+  font-size: 0.875rem;
   font-weight: 400;
   padding: 0 0.75rem;
   line-height: 1.5;
@@ -209,6 +211,11 @@ const rightNavLinks = [
     outline: 2px solid var(--ifm-navbar-link-hover-color);
     outline-offset: 2px;
     border-radius: 4px;
+  }
+
+  &--active {
+    color: var(--ifm-navbar-link-hover-color);
+    font-weight: 600;
   }
 }
 
