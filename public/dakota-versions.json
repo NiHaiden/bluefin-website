@@ -3,7 +3,7 @@
   "packages": {
     "kernel": "6.19.11",
     "gnome": "50.0",
-    "freedesktop-sdk": "25.08.11",
+    "freedesktop-sdk": "25.08.10",
     "mesa": "26.0.5",
     "bootc": "1.15.2",
     "nvidia": "595.71.05",
