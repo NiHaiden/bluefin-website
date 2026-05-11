@@ -199,8 +199,8 @@ else {
     }
   }, activeLinkHandle)
 
-  assert('.navbar__link--active  color', activeStyles.color, 'rgb(74, 105, 189)')
-  assert('.navbar__link--active  fontWeight', activeStyles.fontWeight, '600')
+  assert('.navbar__link--active  color', activeStyles.color, 'rgb(138, 151, 247)')
+  assert('.navbar__link--active  fontWeight', activeStyles.fontWeight, '500')
 }
 
 // ── Section 6: right-side links exist and are in correct order ────────────────

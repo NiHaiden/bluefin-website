@@ -82,8 +82,8 @@ const rightNavLinks = [
 .docusaurus-navbar {
   // Infima CSS variables - matching Docusaurus defaults
   --ifm-navbar-background-color: #242526;
-  --ifm-navbar-link-color: rgba(255, 255, 255, 0.9);
-  --ifm-navbar-link-hover-color: #4a69bd;
+  --ifm-navbar-link-color: rgb(227, 227, 227);
+  --ifm-navbar-link-hover-color: rgb(138, 151, 247);
   --ifm-navbar-height: 60px;
   --ifm-navbar-padding-horizontal: 16px;
   --ifm-navbar-padding-vertical: 14px;
@@ -214,8 +214,8 @@ const rightNavLinks = [
   }
 
   &--active {
-    color: var(--ifm-navbar-link-hover-color);
-    font-weight: 600;
+    color: rgb(138, 151, 247);
+    font-weight: 500;
   }
 }
 
