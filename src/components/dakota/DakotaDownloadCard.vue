@@ -159,4 +159,23 @@ const entries: DownloadEntry[] = [
     height: 1.4rem;
   }
 }
+
+@media (max-width: 500px) {
+  .entry {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 16px 0;
+  }
+
+  .entry-buttons {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .entry-dl {
+    flex: 1;
+    justify-content: center;
+  }
+}
 </style>

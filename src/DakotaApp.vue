@@ -143,6 +143,7 @@ if (i18n.global.availableLocales.includes(currentLocale)) {
   justify-content: flex-start;
   flex: 1;
   min-width: 0;
+  overflow: hidden;
   background: rgba(var(--color-bg-rgb), 0.55);
   backdrop-filter: blur(8px);
   border-radius: 12px;
@@ -155,6 +156,10 @@ if (i18n.global.availableLocales.includes(currentLocale)) {
 
   @media (max-width: 600px) {
     padding: 20px 20px;
+  }
+
+  @media (max-width: 500px) {
+    padding: 20px 16px;
   }
 }
 </style>

@@ -44,7 +44,7 @@ import {
                   </div>
                   <span class="brand-title">Freedesktop SDK</span>
                 </div>
-                <p>Same battle tested libraries used as Flathub. Continuously upgraded, always the up to date.</p>
+                <p>Same battle tested libraries as Flathub. Continuously upgraded, always up to date.</p>
               </div>
 
               <!-- Right: BuildStream 2 -->
@@ -119,6 +119,28 @@ import {
 
   :deep(.brand-grid) {
     margin-bottom: 0;
+  }
+}
+
+// Phone: single column brand-grid
+@media (max-width: 500px) {
+  :deep(.brand-grid) {
+    grid-template-columns: 1fr;
+  }
+
+  // Remove odd-item right border in single-column
+  :deep(.brand-item:nth-child(odd)) {
+    border-right: none;
+  }
+
+  // Last 2 items still need no bottom border
+  :deep(.brand-item:nth-last-child(1)),
+  :deep(.brand-item:nth-last-child(2)) {
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  :deep(.brand-item:last-child) {
+    border-bottom: none;
   }
 }
 </style>

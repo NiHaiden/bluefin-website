@@ -118,4 +118,15 @@ onMounted(() => {
   padding: 8px 16px;
   margin-bottom: 0;
 }
+
+@media (max-width: 500px) {
+  .alpha-badge {
+    font-size: 1.1rem;
+    padding: 6px 12px;
+  }
+
+  .hero-title {
+    font-size: 4.5rem;
+  }
+}
 </style>

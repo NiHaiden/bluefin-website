@@ -93,4 +93,19 @@ const chips = computed(() => {
   font-weight: 700;
   font-size: 1.2rem;
 }
+
+@media (max-width: 500px) {
+  .version-chips {
+    gap: 6px;
+  }
+
+  .version-chip {
+    font-size: 1.1rem;
+  }
+
+  .chip-label,
+  .chip-value {
+    padding: 4px 6px;
+  }
+}
 </style>
