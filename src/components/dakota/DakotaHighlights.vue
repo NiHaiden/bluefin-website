@@ -20,7 +20,7 @@ import {
                   <div class="icon-wrap">
                     <IconGnome />
                   </div>
-                  <span class="brand-title">GNOME OS</span>
+                  <a class="brand-title" href="https://os.gnome.org" target="_blank" rel="noopener noreferrer">GNOME OS</a>
                 </div>
                 <p>The latest stable release of GNOME, no delays</p>
               </div>
@@ -31,7 +31,7 @@ import {
                   <div class="icon-wrap">
                     <IconShieldCheck />
                   </div>
-                  <span class="brand-title">Modern Userspace</span>
+                  <a class="brand-title" href="https://github.com/uutils/coreutils" target="_blank" rel="noopener noreferrer">Modern Userspace</a>
                 </div>
                 <p>uutils, systemd-boot, and legacy-free</p>
               </div>
@@ -42,7 +42,7 @@ import {
                   <div class="icon-wrap">
                     <IconLayers />
                   </div>
-                  <span class="brand-title">Freedesktop SDK</span>
+                  <a class="brand-title" href="https://freedesktop-sdk.io" target="_blank" rel="noopener noreferrer">Freedesktop SDK</a>
                 </div>
                 <p>Same battle tested libraries as Flathub. Continuously upgraded, always up to date.</p>
               </div>
@@ -53,7 +53,7 @@ import {
                   <div class="icon-wrap">
                     <IconSourceBranch />
                   </div>
-                  <span class="brand-title">BuildStream 2</span>
+                  <a class="brand-title" href="https://buildstream.build" target="_blank" rel="noopener noreferrer">BuildStream 2</a>
                 </div>
                 <p>Hermetic sandbox builds, reproducible and fully auditable</p>
               </div>
@@ -115,6 +115,12 @@ import {
     font-weight: 700;
     color: var(--color-text-light);
     align-self: center;
+    text-decoration: none;
+
+    &[href]:hover {
+      text-decoration: underline;
+      opacity: 0.85;
+    }
   }
 
   :deep(.brand-grid) {
