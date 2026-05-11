@@ -24,7 +24,7 @@ onMounted(() => {
     </p>
 
     <p class="hero-desc">
-      Bluefin is a Freedesktop.org and GNOME OS image designed from the ground up to be the most modern raptor in the pack. The familiar Bluefin desktop and developer experience, in a whole new streamlined package. Built from best tech OS tech from the [CNCF], [Apache Foundation], and the [UAPI Group]. Do not run, you'll only die tired.
+      Bluefin is a Freedesktop.org and GNOME OS image designed from the ground up to be the most modern raptor in the pack. The familiar Bluefin desktop and developer experience, in a whole new streamlined package. Built from best tech OS tech from the <a href="https://cncf.io" target="_blank" rel="noopener noreferrer">CNCF</a>, <a href="https://www.apache.org" target="_blank" rel="noopener noreferrer">Apache Foundation</a>, and the <a href="https://uapi-group.org" target="_blank" rel="noopener noreferrer">UAPI Group</a>. Do not run, you'll only die tired.
     </p>
 
     <div class="alpha-badge">
@@ -93,6 +93,16 @@ onMounted(() => {
   line-height: 1.6;
   color: var(--color-text-light);
   margin: 0 0 20px 0;
+
+  a {
+    color: var(--color-blue-light);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 .alpha-badge {
