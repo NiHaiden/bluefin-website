@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 
 /**
- * Script to update dakota-versions.json with release metadata from
- * projectbluefin/dakota GitHub Releases API.
+ * Script to update dakota-versions.json with SBOM-driven package versions.
  *
- * Current approach: fetches the latest release tag and publication date,
- * updates generatedAt and releaseTag while preserving existing package versions.
+ * Sources of truth (in priority order):
+ * 1. docs.projectbluefin.io/data/sbom-attestations.json  — kernel, gnome, mesa,
+ *    bootc, systemd, podman, pipewire, flatpak from the live SBOM pipeline
+ * 2. projectbluefin/dakota raw freedesktop-sdk.bst       — freedesktop-sdk version
+ *    (parsed from the `ref:` tag; not in SBOM because it's a build junction)
+ * 3. Existing values in dakota-versions.json             — fallback / manual fields
+ *    (nvidia — not in SBOM; baseline — fixed string)
  *
- * TODO (proper fix): Query the OCI SBOM attestation for exact installed package
- * versions:
- *   cosign download attestation ghcr.io/projectbluefin/dakota:<tag> \
- *     | jq -r '.payload' | base64 -d | jq '.predicate.components[] | select(.name == "kernel")'
- * This would use the syft JSON schema embedded in the image attestation and is
- * immune to any changelog format changes.
+ * IMPORTANT: freedesktop-sdk must be read from projectbluefin/dakota upstream
+ * main, NOT from any local fork or feature branch.
  */
 
 import fs from 'node:fs'
@@ -22,6 +22,9 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const OUT = path.join(__dirname, '../public/dakota-versions.json')
 const GITHUB_API = 'https://api.github.com'
+const SBOM_URL = 'https://docs.projectbluefin.io/data/sbom-attestations.json'
+const FDSDK_BST_URL
+  = `${GITHUB_API}/repos/projectbluefin/dakota/contents/elements/freedesktop-sdk.bst`
 
 async function main() {
   const headers = {
@@ -29,20 +32,64 @@ async function main() {
     ...(process.env.GITHUB_TOKEN ? { Authorization: `token ${process.env.GITHUB_TOKEN}` } : {}),
   }
 
-  const res = await fetch(`${GITHUB_API}/repos/projectbluefin/dakota/releases/latest`, { headers })
-  if (!res.ok) {
-    console.warn(`[dakota-versions] releases API returned ${res.status} — skipping update`)
-    return
-  }
-
-  const release = await res.json()
   const current = JSON.parse(fs.readFileSync(OUT, 'utf8'))
 
-  current.generatedAt = release.published_at ?? new Date().toISOString()
-  current.releaseTag = release.tag_name
+  // --- 1. SBOM-driven versions ---
+  try {
+    const sbomRes = await fetch(SBOM_URL)
+    if (sbomRes.ok) {
+      const sbom = await sbomRes.json()
+      const stream = sbom?.streams?.['dakota-latest']
+      const releases = stream?.releases ?? {}
+      const latest = Object.values(releases)[0]
+      if (latest) {
+        const pv = latest.packageVersions ?? {}
+        const all = pv.allPackages ?? {}
+        // Top-level packageVersions fields
+        if (pv.kernel) { current.packages.kernel = pv.kernel }
+        if (pv.gnome) { current.packages.gnome = pv.gnome }
+        if (pv.mesa) { current.packages.mesa = pv.mesa }
+        if (pv.systemd) { current.packages.systemd = pv.systemd }
+        if (pv.podman) { current.packages.podman = pv.podman }
+        if (pv.pipewire) { current.packages.pipewire = pv.pipewire }
+        if (pv.flatpak) { current.packages.flatpak = pv.flatpak }
+        // bootc lives in allPackages
+        if (all.bootc) { current.packages.bootc = all.bootc }
+        current.generatedAt = new Date().toISOString()
+        console.info('[dakota-versions] SBOM versions updated')
+      }
+    }
+    else {
+      console.warn(`[dakota-versions] SBOM fetch returned ${sbomRes.status}`)
+    }
+  }
+  catch (e) {
+    console.warn('[dakota-versions] SBOM fetch failed:', e.message)
+  }
+
+  // --- 2. freedesktop-sdk from upstream dakota .bst (not in SBOM) ---
+  try {
+    const bstRes = await fetch(FDSDK_BST_URL, { headers })
+    if (bstRes.ok) {
+      const { content, encoding } = await bstRes.json()
+      const raw = encoding === 'base64' ? Buffer.from(content, 'base64').toString() : content
+      // ref: freedesktop-sdk-25.08.10-0-g...
+      const match = raw.match(/ref:\s*freedesktop-sdk-([\d.]+)/)
+      if (match) {
+        current.packages['freedesktop-sdk'] = match[1]
+        console.info(`[dakota-versions] freedesktop-sdk → ${match[1]}`)
+      }
+    }
+    else {
+      console.warn(`[dakota-versions] freedesktop-sdk.bst fetch returned ${bstRes.status}`)
+    }
+  }
+  catch (e) {
+    console.warn('[dakota-versions] freedesktop-sdk.bst fetch failed:', e.message)
+  }
 
   fs.writeFileSync(OUT, `${JSON.stringify(current, null, 2)}\n`)
-  console.info(`[dakota-versions] updated to ${release.tag_name} (${current.generatedAt})`)
+  console.info('[dakota-versions] wrote', OUT)
 }
 
 main().catch((e) => {
