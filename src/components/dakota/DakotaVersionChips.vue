@@ -85,9 +85,10 @@ const chips = computed(() => {
 
 .chip-value {
   background: rgba(var(--color-blue-rgb), 0.2);
-  color: var(--color-blue-light);
+  color: var(--color-text-light);
   padding: 5px 8px;
   font-family: 'Courier New', monospace;
-  font-weight: 500;
+  font-weight: 700;
+  font-size: 1.2rem;
 }
 </style>
