@@ -128,7 +128,7 @@ const rightNavLinks = [
   justify-content: space-between;
   max-width: 1440px;
   margin: 0 auto;
-  padding: var(--ifm-navbar-padding-vertical) var(--ifm-navbar-padding-horizontal);
+  padding: 8px 16px;
   height: 100%;
 }
 
@@ -143,7 +143,7 @@ const rightNavLinks = [
 .navbar__brand {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 8px;
   text-decoration: none;
   margin-right: 1rem;
   height: var(--ifm-navbar-item-height);
@@ -174,7 +174,7 @@ const rightNavLinks = [
 }
 
 .navbar__title {
-  font-size: 1.25rem;
+  font-size: 16px;
   font-weight: 700;
   color: var(--ifm-navbar-link-color);
   line-height: 1;
@@ -194,9 +194,9 @@ const rightNavLinks = [
 .navbar__link {
   color: var(--ifm-navbar-link-color);
   text-decoration: none;
-  font-size: 0.875rem;
-  font-weight: 400;
-  padding: 0 0.75rem;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 4px 12px;
   line-height: 1.5;
   display: flex;
   align-items: center;
@@ -231,8 +231,8 @@ const rightNavLinks = [
   }
 
   .navbar__link {
-    font-size: 11pt;
-    padding: 0 0.5rem;
+    font-size: 14px;
+    padding: 4px 8px;
   }
 
   .navbar__brand {
