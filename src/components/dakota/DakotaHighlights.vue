@@ -33,7 +33,7 @@ import {
                   </div>
                   <a class="brand-title" href="https://github.com/uutils/coreutils" target="_blank" rel="noopener noreferrer">Modern Userspace</a>
                 </div>
-                <p>uutils, systemd-boot, and legacy-free</p>
+                <p>bootc, brew, uutils, systemd-boot, container first, and legacy-free</p>
               </div>
 
               <!-- Left: primary — freedesktop-sdk -->
@@ -139,28 +139,6 @@ import {
 
   :deep(.brand-grid) {
     margin-bottom: 0;
-  }
-}
-
-// Phone: single column brand-grid
-@media (max-width: 500px) {
-  :deep(.brand-grid) {
-    grid-template-columns: 1fr;
-  }
-
-  // Remove odd-item right border in single-column
-  :deep(.brand-item:nth-child(odd)) {
-    border-right: none;
-  }
-
-  // Last 2 items still need no bottom border
-  :deep(.brand-item:nth-last-child(1)),
-  :deep(.brand-item:nth-last-child(2)) {
-    border-bottom: 1px solid var(--color-border-light);
-  }
-
-  :deep(.brand-item:last-child) {
-    border-bottom: none;
   }
 }
 </style>
