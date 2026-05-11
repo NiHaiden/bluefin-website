@@ -141,4 +141,15 @@ import {
     margin-bottom: 0;
   }
 }
+
+@media (max-width: 500px) {
+  .dakota-highlights {
+    :deep(.brand-grid) {
+      grid-template-columns: 1fr !important;
+    }
+    :deep(.brand-item:nth-child(odd)) {
+      border-right: none !important;
+    }
+  }
+}
 </style>

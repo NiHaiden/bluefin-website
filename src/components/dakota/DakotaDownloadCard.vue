@@ -177,5 +177,16 @@ const entries: DownloadEntry[] = [
     flex: 1;
     justify-content: center;
   }
+
+  .btn {
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .entry-dl {
+    min-width: 0;
+  }
 }
 </style>
