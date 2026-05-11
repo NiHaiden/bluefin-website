@@ -26,7 +26,7 @@ onBeforeMount(() => {
 const urlParams = new URLSearchParams(window.location.search)
 const currentLocale = urlParams.get('lang') || window.navigator.language
 if (i18n.global.availableLocales.includes(currentLocale)) {
-  ;(i18n.global.locale as any).value = currentLocale
+  ;(i18n.global as any).locale = currentLocale
 }
 </script>
 
