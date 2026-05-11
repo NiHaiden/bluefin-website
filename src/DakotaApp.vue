@@ -6,6 +6,7 @@ import DakotaScene from './components/dakota/DakotaScene.vue'
 import DakotaVersionChips from './components/dakota/DakotaVersionChips.vue'
 import PageLoading from './components/PageLoading.vue'
 import TopNavbar from './components/TopNavbar.vue'
+import { setLocale } from './composables/useLocale'
 import { i18n } from './locales/schema'
 
 const visibleSection = ref<string>('')
@@ -26,7 +27,7 @@ onBeforeMount(() => {
 const urlParams = new URLSearchParams(window.location.search)
 const currentLocale = urlParams.get('lang') || window.navigator.language
 if (i18n.global.availableLocales.includes(currentLocale)) {
-  ;(i18n.global as any).locale = currentLocale
+  setLocale(currentLocale)
 }
 </script>
 

@@ -11,6 +11,9 @@ onMounted(() => {
 
 <template>
   <div class="dakota-text" :class="{ 'is-loaded': isLoaded }">
+    <a href="https://projectbluefin.io" class="back-link">
+      ← projectbluefin.io
+    </a>
     <div class="hero-tag">
       <strong>Project Bluefin</strong>
     </div>
@@ -117,6 +120,20 @@ onMounted(() => {
   border-radius: 6px;
   padding: 8px 16px;
   margin-bottom: 0;
+}
+
+.back-link {
+  display: inline-block;
+  color: var(--color-text-light);
+  text-decoration: none;
+  font-size: 1.3rem;
+  opacity: 0.6;
+  margin-bottom: 12px;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
 }
 
 @media (max-width: 500px) {
