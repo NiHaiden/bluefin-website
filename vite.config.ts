@@ -14,7 +14,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        testing: resolve(__dirname, 'public/testing.html')
+        testing: resolve(__dirname, 'public/testing.html'),
+        dakota: resolve(__dirname, 'dakota/index.html'),
       },
       output: {
         manualChunks: {

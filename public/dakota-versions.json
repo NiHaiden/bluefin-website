@@ -1,0 +1,12 @@
+{
+  "generatedAt": "2026-05-10T00:00:00.000Z",
+  "packages": {
+    "kernel": "6.19.11",
+    "gnome": "50.0",
+    "mesa": "26.0.5",
+    "systemd": "260.1",
+    "podman": "5.8.2",
+    "pipewire": "1.6.1",
+    "flatpak": "1.16.6"
+  }
+}

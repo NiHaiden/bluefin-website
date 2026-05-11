@@ -1,0 +1,112 @@
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
+
+const isLoaded = ref(false)
+onMounted(() => {
+  setTimeout(() => {
+    isLoaded.value = true
+  }, 150)
+})
+</script>
+
+<template>
+  <div class="dakota-text" :class="{ 'is-loaded': isLoaded }">
+    <div class="hero-tag">
+      <strong>Project Bluefin</strong>
+    </div>
+
+    <h1 class="hero-title">
+      Dakota
+    </h1>
+
+    <p class="hero-tagline">
+      The Final Form. Bluefin Perfected.
+    </p>
+
+    <p class="hero-desc">
+      Bluefin is a Freedesktop.org and GNOME OS image designed from the ground
+      up to be the most modern raptor in the pack. Built with Apache Buildstream
+      and the CNCF's bootc stack.
+    </p>
+
+    <div class="alpha-badge">
+      ⚠️ Alpha software — take appropriate precautions
+    </div>
+
+    <slot />
+  </div>
+</template>
+
+<style scoped lang="scss">
+.dakota-text {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+  background: rgba(var(--color-bg-rgb), 0.55);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 28px 32px;
+  width: 100%;
+  box-sizing: border-box;
+
+  &.is-loaded {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-tag {
+  margin-bottom: 12px;
+
+  strong {
+    font-size: 2rem;
+    font-weight: 400;
+    font-family: Inter;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+  }
+}
+
+.hero-title {
+  font-family: Inter;
+  font-weight: 700;
+  font-size: 7rem;
+  text-transform: uppercase;
+  color: var(--color-text-light);
+  margin: 0 0 24px 0;
+  line-height: 1;
+  padding-top: 0;
+  padding-left: 0;
+}
+
+.hero-tagline {
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--color-text-light);
+  margin: 0 0 12px 0;
+  line-height: 1.6;
+}
+
+.hero-desc {
+  font-size: 1.6rem;
+  line-height: 1.6;
+  color: var(--color-text-light);
+  margin: 0 0 20px 0;
+}
+
+.alpha-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--color-text-light);
+  background: rgba(var(--color-bg-rgb), 0.5);
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
+  padding: 8px 16px;
+  margin-bottom: 24px;
+}
+</style>
