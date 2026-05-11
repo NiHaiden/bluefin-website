@@ -85,6 +85,28 @@ function assertRange(label, actual, min, max) {
   return ok
 }
 
+function assertFuzzy(label, actual, expected, tolerance = 1) {
+  const diff = Math.abs(actual - expected)
+  const ok = diff <= tolerance
+  const status = ok ? '✅ PASS' : '❌ FAIL'
+  if (ok) {
+    passed++
+    console.log(`  ${status}  ${label}`)
+    console.log(`           got: ${actual} (expected ${expected} ±${tolerance})`)
+  }
+  else {
+    failed++
+    console.log(`  ${status}  ${label}`)
+    console.log(`           expected: ${expected} ±${tolerance}`)
+    console.log(`           got:      ${actual}  (diff: ${diff.toFixed(2)})`)
+  }
+  return ok
+}
+
+function parsePx(value) {
+  return parseFloat(value ?? '0')
+}
+
 function assertContains(label, list, item) {
   const ok = list.includes(item)
   const status = ok ? '✅ PASS' : '❌ FAIL'
@@ -109,6 +131,17 @@ console.log(`\n🔵  Bluefin TopNavbar visual test`)
 console.log(`    URL:        ${URL}`)
 console.log(`    Viewport:   ${VIEWPORT.width}×${VIEWPORT.height}`)
 console.log(`    Screenshot: ${SCREENSHOT}\n`)
+
+// ── Console error capture (must be wired before goto) ───────────────────────
+const consoleErrors = []
+page.on('console', (msg) => {
+  if (msg.type() === 'error') {
+    consoleErrors.push(msg.text())
+  }
+})
+page.on('pageerror', (err) => {
+  consoleErrors.push(err.message)
+})
 
 // ── Load page ──────────────────────────────────────────────────────────────────
 try {
@@ -344,6 +377,144 @@ else {
   const actualOrder = JSON.stringify(rightLinkTexts)
   const expectedOrder = JSON.stringify(EXPECTED_RIGHT_LINKS)
   assert('right-side links order', actualOrder, expectedOrder)
+}
+
+// ── Section 7: spacing parity with docs (dark mode) ────────────────────────
+console.log('\n── Section 7: spacing parity with docs (dark mode) ──')
+
+let docsContext, docsPage
+try {
+  docsContext = await browser.newContext({ colorScheme: 'dark' })
+  docsPage = await docsContext.newPage()
+  await docsPage.setViewportSize({ width: 1440, height: 900 })
+  await docsPage.goto('https://docs.projectbluefin.io', { waitUntil: 'networkidle', timeout: 15000 })
+  await docsPage.waitForTimeout(2000)
+
+  const docsMetrics = await docsPage.evaluate(() => {
+    const logoImg = document.querySelector('.navbar__logo img')
+    const title = document.querySelector('.navbar__title')
+    const firstLink = document.querySelector('.navbar__link')
+    const navbar = document.querySelector('nav.navbar') || document.querySelector('.navbar')
+
+    const r = el => el ? el.getBoundingClientRect() : null
+    const cs = el => el ? window.getComputedStyle(el) : null
+
+    const logoRect = r(logoImg)
+    const titleRect = r(title)
+    const firstLinkRect = r(firstLink)
+
+    return {
+      logoToTitle: (logoRect && titleRect) ? titleRect.left - logoRect.right : null,
+      titleToFirstLink: (titleRect && firstLinkRect) ? firstLinkRect.left - titleRect.right : null,
+      linkPaddingTop: cs(firstLink)?.paddingTop,
+      linkPaddingBottom: cs(firstLink)?.paddingBottom,
+      linkPaddingLeft: cs(firstLink)?.paddingLeft,
+      linkPaddingRight: cs(firstLink)?.paddingRight,
+      navbarHeight: cs(navbar)?.height,
+      navBackground: cs(navbar)?.backgroundColor,
+      linkFontSize: cs(firstLink)?.fontSize,
+      linkFontWeight: cs(firstLink)?.fontWeight,
+    }
+  })
+
+  const localMetrics = await page.evaluate(() => {
+    const logoImg = document.querySelector('.navbar__logo img')
+    const title = document.querySelector('.navbar__title')
+    const firstLink = document.querySelector('.navbar__link')
+    const navbar = document.querySelector('.docusaurus-navbar')
+      || document.querySelector('nav.navbar')
+      || document.querySelector('.navbar')
+
+    const r = el => el ? el.getBoundingClientRect() : null
+    const cs = el => el ? window.getComputedStyle(el) : null
+
+    const logoRect = r(logoImg)
+    const titleRect = r(title)
+    const firstLinkRect = r(firstLink)
+
+    return {
+      logoToTitle: (logoRect && titleRect) ? titleRect.left - logoRect.right : null,
+      titleToFirstLink: (titleRect && firstLinkRect) ? firstLinkRect.left - titleRect.right : null,
+      linkPaddingTop: cs(firstLink)?.paddingTop,
+      linkPaddingBottom: cs(firstLink)?.paddingBottom,
+      linkPaddingLeft: cs(firstLink)?.paddingLeft,
+      linkPaddingRight: cs(firstLink)?.paddingRight,
+      navbarHeight: cs(navbar)?.height,
+      navBackground: cs(navbar)?.backgroundColor,
+      linkFontSize: cs(firstLink)?.fontSize,
+      linkFontWeight: cs(firstLink)?.fontWeight,
+    }
+  })
+
+  console.log(`  ℹ️   docs.projectbluefin.io extracted values:`)
+  console.log(`       logo→title: ${docsMetrics.logoToTitle?.toFixed(1)}px`)
+  console.log(`       title→first link: ${docsMetrics.titleToFirstLink?.toFixed(1)}px`)
+  console.log(`       link padding: ${docsMetrics.linkPaddingTop} ${docsMetrics.linkPaddingRight}`)
+  console.log(`       navbar height: ${docsMetrics.navbarHeight}`)
+  console.log(`       nav background: ${docsMetrics.navBackground}`)
+  console.log(`       link font-size: ${docsMetrics.linkFontSize}  font-weight: ${docsMetrics.linkFontWeight}`)
+
+  // ── Gap parity: local vs docs ──────────────────────────────────────────────
+  if (docsMetrics.logoToTitle !== null && localMetrics.logoToTitle !== null) {
+    assertFuzzy(
+      `logo→title gap parity (local ${localMetrics.logoToTitle?.toFixed(1)}px vs docs ${docsMetrics.logoToTitle?.toFixed(1)}px)`,
+      localMetrics.logoToTitle, docsMetrics.logoToTitle,
+    )
+  }
+  else {
+    console.log('  ❌ FAIL  logo→title gap: element missing on local or docs')
+    failed++
+  }
+
+  if (docsMetrics.titleToFirstLink !== null && localMetrics.titleToFirstLink !== null) {
+    assertFuzzy(
+      `title→first link gap parity (local ${localMetrics.titleToFirstLink?.toFixed(1)}px vs docs ${docsMetrics.titleToFirstLink?.toFixed(1)}px)`,
+      localMetrics.titleToFirstLink, docsMetrics.titleToFirstLink,
+    )
+  }
+  else {
+    console.log('  ❌ FAIL  title→first link gap: element missing on local or docs')
+    failed++
+  }
+
+  // ── Absolute targets (±1px) — compare local against known-good values ──────
+  assertFuzzy('link paddingTop (target 4px)',    parsePx(localMetrics.linkPaddingTop),    4)
+  assertFuzzy('link paddingBottom (target 4px)', parsePx(localMetrics.linkPaddingBottom), 4)
+  assertFuzzy('link paddingLeft (target 12px)',  parsePx(localMetrics.linkPaddingLeft),   12)
+  assertFuzzy('link paddingRight (target 12px)', parsePx(localMetrics.linkPaddingRight),  12)
+  assertFuzzy('navbar height (target 60px)',     parsePx(localMetrics.navbarHeight),      60)
+  assertFuzzy('link font-size (target 16px)',    parsePx(localMetrics.linkFontSize),      16)
+  assert('link font-weight (target 500)',        localMetrics.linkFontWeight, '500')
+
+  // ── Background color parity ───────────────────────────────────────────────
+  assert(
+    `nav background color parity (local vs docs)`,
+    localMetrics.navBackground,
+    docsMetrics.navBackground,
+  )
+
+  await docsPage.close()
+  await docsContext.close()
+}
+catch (err) {
+  console.log(`  ❌ FAIL  Section 7 network/parse error: ${err.message}`)
+  failed++
+  if (docsPage) await docsPage.close().catch(() => {})
+  if (docsContext) await docsContext.close().catch(() => {})
+}
+
+// ── Section 8: no JS console errors ─────────────────────────────────────────
+console.log('\n── Section 8: no JS console errors ──')
+
+if (consoleErrors.length === 0) {
+  passed++
+  console.log('  ✅ PASS  no console errors')
+  console.log('           got: 0 errors')
+}
+else {
+  failed++
+  console.log(`  ❌ FAIL  ${consoleErrors.length} console error(s) detected:`)
+  consoleErrors.forEach((e, i) => console.log(`           [${i + 1}] ${e}`))
 }
 
 // ── Screenshot ────────────────────────────────────────────────────────────────

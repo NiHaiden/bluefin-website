@@ -169,24 +169,14 @@ const entries: DownloadEntry[] = [
   }
 
   .entry-buttons {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .entry-dl {
-    flex: 1;
-    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
   }
 
   .btn {
     white-space: nowrap;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .entry-dl {
-    min-width: 0;
+    flex: 0 0 auto;
   }
 }
 </style>
