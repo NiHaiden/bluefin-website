@@ -85,8 +85,8 @@ const rightNavLinks = [
   --ifm-navbar-link-color: rgba(255, 255, 255, 0.9);
   --ifm-navbar-link-hover-color: #4a69bd;
   --ifm-navbar-height: 60px;
-  --ifm-navbar-padding-horizontal: 1rem;
-  --ifm-navbar-padding-vertical: calc((var(--ifm-navbar-height) - var(--ifm-navbar-item-height)) / 2);
+  --ifm-navbar-padding-horizontal: 16px;
+  --ifm-navbar-padding-vertical: 14px;
   --ifm-navbar-item-height: 32px;
   --ifm-navbar-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
   --ifm-transition-fast: 200ms;
@@ -145,7 +145,7 @@ const rightNavLinks = [
   align-items: center;
   gap: 8px;
   text-decoration: none;
-  margin-right: 1rem;
+  margin-right: 16px;
   height: var(--ifm-navbar-item-height);
   transition: opacity var(--ifm-transition-fast) var(--ifm-transition-timing-default);
 
@@ -166,7 +166,7 @@ const rightNavLinks = [
   height: 100%;
 
   img {
-    height: 2rem;
+    height: 32px;
     width: auto;
     display: block;
     max-width: none;
@@ -227,7 +227,7 @@ const rightNavLinks = [
 // Mobile responsive - matching Docusaurus breakpoints exactly
 @media (max-width: 996px) {
   .docusaurus-navbar {
-    --ifm-navbar-padding-horizontal: 0.5rem;
+    --ifm-navbar-padding-horizontal: 8px;
   }
 
   .navbar__link {
@@ -236,7 +236,7 @@ const rightNavLinks = [
   }
 
   .navbar__brand {
-    margin-right: 0.5rem;
+    margin-right: 8px;
   }
 }
 
