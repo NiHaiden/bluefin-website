@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+  IconAccountGroup,
   IconGnome,
   IconLayers,
   IconShieldCheck,
@@ -45,6 +46,17 @@ import {
                   <a class="brand-title" href="https://freedesktop-sdk.io" target="_blank" rel="noopener noreferrer">Freedesktop SDK</a>
                 </div>
                 <p>Same battle tested libraries as Flathub. Continuously upgraded, always up to date.</p>
+              </div>
+
+              <!-- Left: Designed for Contributors -->
+              <div class="brand-item">
+                <div>
+                  <div class="icon-wrap">
+                    <IconAccountGroup />
+                  </div>
+                  <span class="brand-title">Designed for Contributors</span>
+                </div>
+                <p>Your path to contributing to some of the coolest projects in desktop Linux. Start here, then level up and become part of the upstream teams.</p>
               </div>
 
               <!-- Right: BuildStream 2 -->
