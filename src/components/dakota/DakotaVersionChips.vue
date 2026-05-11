@@ -7,17 +7,20 @@ interface DakotaVersions {
 }
 
 const LABELS: Record<string, string> = {
-  baseline: 'x86-64',
-  kernel: 'Kernel',
-  gnome: 'GNOME',
-  mesa: 'Mesa',
-  bootc: 'bootc',
-  nvidia: 'Nvidia',
-  systemd: 'systemd',
-  podman: 'Podman',
-  pipewire: 'PipeWire',
-  flatpak: 'Flatpak',
+  'kernel': 'Kernel',
+  'gnome': 'GNOME',
+  'freedesktop-sdk': 'Freedesktop SDK',
+  'mesa': 'Mesa',
+  'bootc': 'bootc',
+  'nvidia': 'Nvidia',
+  'systemd': 'systemd',
+  'podman': 'Podman',
+  'pipewire': 'PipeWire',
+  'flatpak': 'Flatpak',
+  'baseline': 'x86-64',
 }
+
+const FEATURE_KEYS = new Set(['baseline'])
 
 const versions = ref<DakotaVersions | null>(null)
 
@@ -42,7 +45,7 @@ const chips = computed(() => {
   }
   return Object.entries(versions.value.packages)
     .filter(([, v]) => v)
-    .map(([key, value]) => ({ label: LABELS[key] ?? key, value }))
+    .map(([key, value]) => ({ label: LABELS[key] ?? key, value, isFeature: FEATURE_KEYS.has(key) }))
 })
 </script>
 
@@ -52,6 +55,7 @@ const chips = computed(() => {
       v-for="chip in chips"
       :key="chip.label"
       class="version-chip"
+      :class="{ 'chip-feature': chip.isFeature }"
     >
       <span class="chip-label">{{ chip.label }}</span>
       <span class="chip-value">{{ chip.value }}</span>
@@ -76,6 +80,19 @@ const chips = computed(() => {
   overflow: hidden;
   font-size: 1.2rem;
   line-height: 1;
+
+  &.chip-feature {
+    border-color: rgba(var(--color-green-rgb, 80, 200, 120), 0.5);
+
+    .chip-label {
+      color: var(--color-text);
+    }
+
+    .chip-value {
+      background: rgba(80, 200, 120, 0.15);
+      color: rgb(120, 220, 150);
+    }
+  }
 }
 
 .chip-label {
