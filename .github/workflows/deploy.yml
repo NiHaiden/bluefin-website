@@ -36,6 +36,7 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
+      # TODO: wire navbar-visual.mjs once serve step is stable
       - name: Setup Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
       - name: Upload artifact

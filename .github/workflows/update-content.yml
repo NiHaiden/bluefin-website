@@ -37,6 +37,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Update Dakota versions
+        run: node scripts/update-dakota-versions.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Check for changes
         id: changes
         run: |
@@ -77,6 +82,10 @@ jobs:
               - `ublue-os/bluefin` (for GTS and Stable streams)
               - `ublue-os/bluefin-lts` (for LTS stream)
 
+            ### Dakota Versions
+            - Updated `public/dakota-versions.json` release metadata
+            - Data sourced from latest `projectbluefin/dakota` release tag
+
             ### Review Notes
             - This is an automated daily update
             - Please verify the data looks correct before merging
@@ -89,6 +98,7 @@ jobs:
           add-paths: |
             src/assets/svg/growth_bluefins.svg
             public/stream-versions.yml
+            public/dakota-versions.json
 
       - name: Create issue on failure
         if: failure()
