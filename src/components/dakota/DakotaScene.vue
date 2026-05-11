@@ -24,7 +24,7 @@ onMounted(() => {
     </p>
 
     <p class="hero-desc">
-      Bluefin is a Freedesktop.org and GNOME OS image designed from the ground up to be the most modern raptor in the pack. Built with Apache Buildstream and the CNCF's bootc stack. The familiar Bluefin desktop and developer experience, in a whole new streamlined package. Do not fear.
+      Bluefin is a Freedesktop.org and GNOME OS image designed from the ground up to be the most modern raptor in the pack. The familiar Bluefin desktop and developer experience, in a whole new streamlined package. Built from best tech OS tech from the [CNCF], [Apache Foundation], and the [UAPI Group]. Do not run, you'll only die tired.
     </p>
 
     <div class="alpha-badge">

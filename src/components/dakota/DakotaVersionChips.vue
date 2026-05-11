@@ -21,10 +21,15 @@ const versions = ref<DakotaVersions | null>(null)
 onMounted(async () => {
   try {
     const res = await fetch('/dakota-versions.json')
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`)
+    }
     versions.value = await res.json()
   }
-  catch {
-    // silently skip if unavailable
+  catch (e) {
+    if (import.meta.env.DEV) {
+      console.warn('[DakotaVersionChips] failed to load versions', e)
+    }
   }
 })
 
