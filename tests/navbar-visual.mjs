@@ -140,6 +140,90 @@ for (const expected of EXPECTED_LINKS) {
   assertContains(`link text "${expected}"`, linkTexts, expected)
 }
 
+// ── Section 4: spacing and sizing ───────────────────────────────────────────
+console.log('\n── Section 4: spacing and sizing ──')
+
+const brandHandle = await page.$('.navbar__brand')
+if (!brandHandle) {
+  console.log('  ❌ FAIL  .navbar__brand not found in DOM')
+  failed++
+}
+else {
+  const brandMarginRight = await page.evaluate(
+    el => window.getComputedStyle(el).marginRight,
+    brandHandle,
+  )
+  assert('.navbar__brand  marginRight', brandMarginRight, '16px')
+}
+
+const logoImgHandle = await page.$('.navbar__logo img')
+if (!logoImgHandle) {
+  console.log('  ❌ FAIL  .navbar__logo img not found in DOM')
+  failed++
+}
+else {
+  const logoHeight = await page.evaluate(
+    el => window.getComputedStyle(el).height,
+    logoImgHandle,
+  )
+  assert('.navbar__logo img  height', logoHeight, '32px')
+}
+
+const docusaurusNavHandle = await page.$('.docusaurus-navbar')
+if (!docusaurusNavHandle) {
+  console.log('  ❌ FAIL  .docusaurus-navbar not found in DOM')
+  failed++
+}
+else {
+  const navHeight = await page.evaluate(
+    el => window.getComputedStyle(el).height,
+    docusaurusNavHandle,
+  )
+  assert('.docusaurus-navbar  height', navHeight, '60px')
+}
+
+// ── Section 5: active link styling ───────────────────────────────────────────
+console.log('\n── Section 5: active link styling ──')
+
+const activeLinkHandle = await page.$('.navbar__link--active')
+if (!activeLinkHandle) {
+  console.log('  ❌ FAIL  .navbar__link--active not found in DOM')
+  failed++
+}
+else {
+  const activeStyles = await page.evaluate((el) => {
+    const cs = window.getComputedStyle(el)
+    return {
+      color: cs.color,
+      fontWeight: cs.fontWeight,
+    }
+  }, activeLinkHandle)
+
+  assert('.navbar__link--active  color', activeStyles.color, 'rgb(74, 105, 189)')
+  assert('.navbar__link--active  fontWeight', activeStyles.fontWeight, '600')
+}
+
+// ── Section 6: right-side links exist and are in correct order ────────────────
+console.log('\n── Section 6: right-side links order ──')
+
+const EXPECTED_RIGHT_LINKS = ['Blog', 'Changelogs', 'Reports', 'Discussions', 'Feedback', 'Store (US Only)']
+
+const rightLinkTexts = await page.$$eval(
+  '.navbar__items--right .navbar__link',
+  els => els.map(el => el.textContent?.trim()).filter(Boolean),
+)
+console.log(`  Found right-side links: [${rightLinkTexts.join(', ')}]`)
+
+if (rightLinkTexts.length === 0) {
+  console.log('  ❌ FAIL  No .navbar__items--right .navbar__link elements found')
+  failed++
+}
+else {
+  const actualOrder = JSON.stringify(rightLinkTexts)
+  const expectedOrder = JSON.stringify(EXPECTED_RIGHT_LINKS)
+  assert('right-side links order', actualOrder, expectedOrder)
+}
+
 // ── Screenshot ────────────────────────────────────────────────────────────────
 await page.screenshot({ path: SCREENSHOT, fullPage: false })
 console.log(`\n📸  Screenshot saved → ${SCREENSHOT}`)
