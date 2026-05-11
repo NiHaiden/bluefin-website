@@ -106,12 +106,25 @@ if (i18n.global.availableLocales.includes(currentLocale)) {
   flex: 1;
   min-width: 0;
 
+  // Medium: text box and raptor side by side
+  @media (min-width: 640px) and ((max-aspect-ratio: 16/10) or (max-width: 1023px)) {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 32px;
+  }
+
   .raptor {
     height: 30vh;
     width: auto;
     transform: scaleX(-1);
     filter: drop-shadow(0 20px 60px rgba(var(--color-blue-rgb), 0.2));
     margin-top: 24px;
+
+    // Medium: no top margin, sits beside text
+    @media (min-width: 640px) and ((max-aspect-ratio: 16/10) or (max-width: 1023px)) {
+      margin-top: 0;
+      flex-shrink: 0;
+    }
 
     @media (max-aspect-ratio: 16/10), (max-width: 1023px) {
       height: 20vh;

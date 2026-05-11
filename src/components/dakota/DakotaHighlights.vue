@@ -44,7 +44,7 @@ import {
                   </div>
                   <span class="brand-title">Freedesktop SDK</span>
                 </div>
-                <p>Same battle tested libraries used as Flathub. Continuously upgraded, always at the leading edge, but stable.</p>
+                <p>Same battle tested libraries used as Flathub. Continuously upgraded, always the up to date.</p>
               </div>
 
               <!-- Right: BuildStream 2 -->
