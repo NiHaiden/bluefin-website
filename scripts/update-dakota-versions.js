@@ -63,6 +63,15 @@ async function main() {
         assign('bootc', all.bootc)
         current.generatedAt = new Date().toISOString()
         console.info('[dakota-versions] SBOM versions updated')
+
+        // nvidia from dakota-nvidia-latest stream
+        const nvStream = sbom?.streams?.['dakota-nvidia-latest']
+        const nvReleases = nvStream?.releases ?? {}
+        const nvLatest = Object.values(nvReleases)[0]
+        if (nvLatest) {
+          assign('nvidia', nvLatest.packageVersions?.nvidia)
+          console.info(`[dakota-versions] nvidia → ${nvLatest.packageVersions?.nvidia}`)
+        }
       }
     }
     else {
