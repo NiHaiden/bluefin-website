@@ -17,15 +17,15 @@ const BASE = 'https://projectbluefin.dev'
 const entries: DownloadEntry[] = [
   {
     label: 'AMD / Intel',
-    isoUrl: `${BASE}/dakota-live-latest.iso`,
-    isoFilename: 'dakota-live-latest.iso',
-    checksumUrl: `${BASE}/dakota-live-latest.iso-CHECKSUM`,
+    isoUrl: `${BASE}/dakota-live-alpha2.iso`,
+    isoFilename: 'dakota-live-alpha2.iso',
+    checksumUrl: `${BASE}/dakota-live-alpha2.iso-CHECKSUM`,
   },
   {
     label: 'Nvidia',
-    isoUrl: `${BASE}/dakota-nvidia-live-latest.iso`,
-    isoFilename: 'dakota-nvidia-live-latest.iso',
-    checksumUrl: `${BASE}/dakota-nvidia-live-latest.iso-CHECKSUM`,
+    isoUrl: `${BASE}/dakota-nvidia-live-alpha2.iso`,
+    isoFilename: 'dakota-nvidia-live-alpha2.iso',
+    checksumUrl: `${BASE}/dakota-nvidia-live-alpha2.iso-CHECKSUM`,
   },
 ]
 </script>

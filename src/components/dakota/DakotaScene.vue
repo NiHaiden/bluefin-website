@@ -34,6 +34,19 @@ onMounted(() => {
       ⚠️ Alpha software — take appropriate precautions
     </div>
 
+    <div class="release-links">
+      <a
+        href="https://docs.projectbluefin.io/blog/making-our-own-fate/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >Alpha 2 Announcement →</a>
+      <a
+        href="https://docs.projectbluefin.io/blog/dakota-alpha-1/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >Alpha 1 Announcement →</a>
+    </div>
+
     <slot />
   </div>
 </template>
@@ -120,6 +133,27 @@ onMounted(() => {
   border-radius: 6px;
   padding: 8px 16px;
   margin-bottom: 0;
+}
+
+.release-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin-top: 10px;
+
+  a {
+    color: var(--color-blue-light);
+    font-size: 1.3rem;
+    font-weight: 600;
+    text-decoration: none;
+    opacity: 0.85;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+  }
 }
 
 .back-link {
