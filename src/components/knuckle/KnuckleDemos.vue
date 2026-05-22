@@ -3,12 +3,16 @@ import { onMounted, onUnmounted, ref } from 'vue'
 
 const baseUrl = import.meta.env.BASE_URL
 
-const phase = ref<'channels' | 'update' | 'dashboard'>('channels')
+type Phase = 'cluster' | 'cpu' | 'storage' | 'progress'
+
+const phase = ref<Phase>('cluster')
 let timer: ReturnType<typeof setTimeout>
-const sequence: Array<{ phase: 'channels' | 'update' | 'dashboard', duration: number }> = [
-  { phase: 'channels', duration: 12000 },
-  { phase: 'update', duration: 8000 },
-  { phase: 'dashboard', duration: 10000 },
+
+const sequence: Array<{ phase: Phase, duration: number }> = [
+  { phase: 'cluster', duration: 10000 },
+  { phase: 'cpu', duration: 10000 },
+  { phase: 'storage', duration: 10000 },
+  { phase: 'progress', duration: 8000 },
 ]
 let idx = 0
 
@@ -23,71 +27,73 @@ function cycle() {
 
 onMounted(() => cycle())
 onUnmounted(() => clearTimeout(timer))
+
+const isWebUI = (p: Phase) => p !== 'progress'
+
+const subtitleMap: Record<Phase, string> = {
+  cluster: 'cluster overview',
+  cpu: 'node metrics',
+  storage: 'storage',
+  progress: 'installing',
+}
 </script>
 
 <template>
   <section class="knuckle-demos">
     <div class="demo-window">
-      <!-- Adw.HeaderBar -->
-      <div class="adw-header-bar">
-        <!-- [start]: new tab split button -->
-        <div class="hb-start">
-          <button class="hb-icon-btn" aria-label="New Tab" tabindex="-1">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      <!-- Browser chrome for WebUI, Ghostty chrome for TUI -->
+      <template v-if="isWebUI(phase)">
+        <div class="browser-bar">
+          <div class="browser-spacer" />
+          <div class="browser-url">
+            <span class="browser-url-text">bluespeed · {{ subtitleMap[phase] }}</span>
+          </div>
+          <button class="hb-min-btn" aria-label="Minimize" tabindex="-1">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+              <path d="M2 5h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </button>
-        </div>
-        <!-- center: Adw.WindowTitle -->
-        <div class="hb-title">
-          <span class="hb-title-text">bluespeed</span>
-          <span class="hb-subtitle-text">{{ phase === 'channels' ? 'channels' : phase === 'update' ? 'update strategy' : 'dashboard' }}</span>
-        </div>
-        <!-- [end]: grid + menu + close -->
-        <div class="hb-end">
-          <button class="hb-icon-btn" aria-label="View Tabs" tabindex="-1">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <rect x="2" y="2" width="5" height="5" rx="1" fill="currentColor" opacity="0.8" />
-              <rect x="9" y="2" width="5" height="5" rx="1" fill="currentColor" opacity="0.8" />
-              <rect x="2" y="9" width="5" height="5" rx="1" fill="currentColor" opacity="0.8" />
-              <rect x="9" y="9" width="5" height="5" rx="1" fill="currentColor" opacity="0.8" />
+          <button class="hb-max-btn" aria-label="Maximize" tabindex="-1">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+              <rect x="1.5" y="1.5" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5" fill="none" />
             </svg>
           </button>
-          <button class="hb-icon-btn" aria-label="Menu" tabindex="-1">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <circle cx="8" cy="3.5" r="1.2" fill="currentColor" opacity="0.8" />
-              <circle cx="8" cy="8" r="1.2" fill="currentColor" opacity="0.8" />
-              <circle cx="8" cy="12.5" r="1.2" fill="currentColor" opacity="0.8" />
-            </svg>
-          </button>
-          <!-- window close button (GNOME default: close only, right side) -->
           <button class="hb-close-btn" aria-label="Close" tabindex="-1">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
               <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </button>
         </div>
-      </div>
-      <!-- Adw.TabBar — removed -->
+      </template>
+
       <transition name="fade" mode="out-in">
         <img
-          v-if="phase === 'channels'"
-          key="channels"
-          :src="`${baseUrl}knuckle-channels.gif`"
-          alt="Knuckle channel selector showing Stable, LTS, Beta, Alpha"
+          v-if="phase === 'cluster'"
+          key="cluster"
+          :src="`${baseUrl}bluespeed-cluster.png`"
+          alt="Bluespeed cluster overview dashboard"
         >
         <img
-          v-else-if="phase === 'update'"
-          key="update"
-          :src="`${baseUrl}knuckle-update.gif`"
-          alt="Knuckle update strategy configuration"
+          v-else-if="phase === 'cpu'"
+          key="cpu"
+          :src="`${baseUrl}bluespeed-cpu.png`"
+          alt="Bluespeed node CPU metrics"
         >
         <img
-          v-else
-          key="dashboard"
-          :src="`${baseUrl}kubestellar-dashboard.png`"
-          alt="KubeStellar dashboard"
+          v-else-if="phase === 'storage'"
+          key="storage"
+          :src="`${baseUrl}bluespeed-storage.png`"
+          alt="Bluespeed storage view"
         >
+        <div v-else key="progress" class="tui-frame">
+          <p class="tui-caption">
+            Just one quick TUI install to get the web dashboard up and running.
+          </p>
+          <img
+            :src="`${baseUrl}knuckle-progress.png`"
+            alt="Knuckle installer progress"
+          >
+        </div>
       </transition>
     </div>
   </section>
@@ -115,7 +121,45 @@ onUnmounted(() => clearTimeout(timer))
   }
 }
 
-/* Adw.HeaderBar */
+/* ── Browser chrome (WebUI) — Adwaita CSD style ── */
+.browser-bar {
+  display: flex;
+  align-items: center;
+  height: 46px;
+  padding: 0 6px;
+  background: #303030;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+  user-select: none;
+  gap: 4px;
+}
+
+.browser-spacer {
+  width: 82px; /* mirrors 3 buttons on right for visual balance */
+  flex-shrink: 0;
+}
+
+.browser-url {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.browser-url-text {
+  font-family: Cantarell, 'Noto Sans', system-ui, sans-serif;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 3px 14px;
+  min-width: 180px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Adw.HeaderBar (TUI screenshot) ── */
 .adw-header-bar {
   display: flex;
   align-items: center;
@@ -189,7 +233,33 @@ onUnmounted(() => clearTimeout(timer))
   }
 }
 
-/* Adw window close button — circular, right side */
+.hb-min-btn,
+.hb-max-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: default;
+  padding: 0;
+  transition:
+    background 0.1s,
+    color 0.1s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+  }
+
+  svg {
+    display: block;
+  }
+}
+
 .hb-close-btn {
   display: inline-flex;
   align-items: center;
@@ -217,7 +287,16 @@ onUnmounted(() => clearTimeout(timer))
   }
 }
 
-/* Adw.TabBar — removed */
+.tui-caption {
+  font-family: Cantarell, 'Noto Sans', system-ui, sans-serif;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+  padding: 10px 16px 8px;
+  margin: 0;
+  background: #1d1d20;
+  font-style: italic;
+}
 
 .fade-enter-active,
 .fade-leave-active {
