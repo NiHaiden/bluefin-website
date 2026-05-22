@@ -122,10 +122,10 @@ const clients: ClientCard[] = [
         <div class="icon-wrap">
           <IconCodeBraces />
         </div>
-        <span class="brand-title">AI Clients</span>
+        <span class="brand-title">Agent Endpoints</span>
       </div>
       <p class="features-desc">
-        Bring your own LLM. These clients wire into your infrastructure out of the box.
+        Bring your own LLM. Optimized for local workloads, clients wire into your infrastructure out of the box.
       </p>
 
       <div class="app-grid">
