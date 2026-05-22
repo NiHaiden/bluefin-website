@@ -92,7 +92,7 @@ const clients: ClientCard[] = [
         <span class="brand-title">Extensible</span>
       </div>
       <p class="features-desc">
-        Everything is optional. Start with a blank OS and then bolt on what you need. System Extensions activate on boot and extend the core system as needed.
+        Everything is optional. Start with a blank OS and then bolt on what you need. System Extensions activate on boot and extend the core system as needed. Only use what you need. Start with a simple set of containers for a single homeserver or scale up to an entire self healing cluster for your self hosting needs. Over a decade of production use:
       </p>
 
       <div class="app-grid">
