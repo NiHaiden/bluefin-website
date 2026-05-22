@@ -2,10 +2,13 @@
 import type { Component, WritableComputedRef } from 'vue'
 import type { MessageSchema } from '../locales/schema'
 import {
+  IconClose,
   IconCodeBraces,
   IconDownload,
   IconFaceManShimmer,
+  IconMenu,
 } from '@iconify-prerendered/vue-mdi'
+import { useEventListener } from '@vueuse/core'
 import { inject, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -76,6 +79,24 @@ watch(
   },
   { immediate: true },
 )
+
+// Mobile menu state
+const mobileMenuOpen = ref(false)
+
+function toggleMobileMenu() {
+  mobileMenuOpen.value = !mobileMenuOpen.value
+}
+
+// Close mobile menu when clicking outside
+useEventListener(document, 'click', (e: Event) => {
+  if (!mobileMenuOpen.value) {
+    return
+  }
+  const navbar = document.querySelector('.unified-navbar')
+  if (navbar && !navbar.contains(e.target as Node)) {
+    mobileMenuOpen.value = false
+  }
+})
 </script>
 
 <template>
@@ -99,7 +120,35 @@ watch(
           {{ link.name }}
         </a>
       </div>
+
+      <!-- Mobile menu toggle -->
+      <button
+        class="mobile-menu-btn"
+        :aria-label="mobileMenuOpen ? 'Close menu' : 'Open menu'"
+        :aria-expanded="mobileMenuOpen"
+        @click="toggleMobileMenu"
+      >
+        <IconClose v-if="mobileMenuOpen" />
+        <IconMenu v-else />
+      </button>
     </div>
+
+    <!-- Mobile dropdown menu -->
+    <Transition name="menu-slide">
+      <div v-if="mobileMenuOpen" class="mobile-menu">
+        <a
+          v-for="link in externalLinks"
+          :key="link.name"
+          :href="link.href"
+          class="mobile-menu-link"
+          :target="link.external ? '_blank' : undefined"
+          :rel="link.external ? 'noopener noreferrer' : undefined"
+          @click="mobileMenuOpen = false"
+        >
+          {{ link.name }}
+        </a>
+      </div>
+    </Transition>
 
     <!-- Bottom row: section navigation -->
     <div class="navbar-sections">
@@ -319,6 +368,61 @@ watch(
   }
 }
 
+// Mobile menu button - hidden on desktop
+.mobile-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+
+  svg {
+    font-size: 20px;
+  }
+
+  &:hover {
+    background-color: rgba(var(--color-blue-rgb), 0.15);
+    color: var(--color-text-light);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-blue-light);
+    outline-offset: 2px;
+  }
+}
+
+// Mobile dropdown menu - hidden on desktop
+.mobile-menu {
+  display: none;
+}
+
+// Mobile menu transition
+.menu-slide-enter-active,
+.menu-slide-leave-active {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menu-slide-enter-from,
+.menu-slide-leave-to {
+  opacity: 0;
+  max-height: 0;
+  transform: translateY(-8px);
+}
+
+.menu-slide-enter-to,
+.menu-slide-leave-from {
+  opacity: 1;
+  max-height: 400px;
+  transform: translateY(0);
+}
+
 // Tablet
 @media (max-width: 996px) {
   .unified-navbar {
@@ -358,11 +462,40 @@ watch(
   }
 
   .navbar-top {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
   }
 
   .navbar-links {
     display: none;
+  }
+
+  .mobile-menu-btn {
+    display: flex;
+  }
+
+  .mobile-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+  }
+
+  .mobile-menu-link {
+    display: block;
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 12px;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: var(--color-text-light);
+      background-color: rgba(var(--color-blue-rgb), 0.15);
+    }
   }
 
   .navbar-sections li a {
