@@ -1,6 +1,6 @@
-// Top navbar adjustments
+// Unified navbar adjustments
 body {
-  padding-top: 60px;
+  padding-top: 120px;
 }
 
 // Ensure the first scene starts below the navbar
@@ -11,6 +11,6 @@ body {
 // Mobile adjustments
 @media (max-width: 768px) {
   body {
-    padding-top: 56px;
+    padding-top: 100px;
   }
 }

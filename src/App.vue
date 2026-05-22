@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onBeforeMount, provide, ref } from 'vue'
 
-import Navigation from './components/Navigation.vue'
 import PageLoading from './components/PageLoading.vue'
 import SceneDevelopers from './components/scenes/SceneDevelopers.vue'
 import SceneLanding from './components/scenes/SceneLanding.vue'
@@ -74,7 +73,6 @@ if (i18n.global.availableLocales.includes(currentLocale)) {
       <SectionCommunity />
       <SectionNews />
       <SectionFooter />
-      <Navigation />
     </div>
   </main>
 </template>

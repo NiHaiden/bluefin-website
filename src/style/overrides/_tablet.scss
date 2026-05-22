@@ -508,26 +508,4 @@
       // padding: 20px;
     }
   }
-
-  #navigation {
-    width: 70%;
-    max-width: 512px;
-    bottom: 1em;
-
-    .btn-up {
-      height: 40px;
-      width: 40px;
-    }
-
-    nav ul {
-      li a {
-        font-size: 0.9rem;
-        height: 40px;
-
-        svg {
-          font-size: 1.4rem;
-        }
-      }
-    }
-  }
 }
