@@ -11,11 +11,8 @@ onMounted(() => {
 
 <template>
   <div class="dakota-text" :class="{ 'is-loaded': isLoaded }">
-    <a href="https://projectbluefin.io" class="back-link">
-      ← projectbluefin.io
-    </a>
     <div class="hero-tag">
-      <strong>Project Bluefin</strong>
+      <strong>Project Bluefin Presents&hellip;</strong>
     </div>
 
     <h1 class="hero-title">

@@ -11,9 +11,6 @@ onMounted(() => {
 
 <template>
   <div class="knuckle-text" :class="{ 'is-loaded': isLoaded }">
-    <a href="https://projectbluefin.io" class="back-link">
-      ← projectbluefin.io
-    </a>
     <div class="hero-tag">
       <strong>Project Bluefin Presents&hellip;</strong>
     </div>
