@@ -27,7 +27,11 @@ onMounted(() => {
     </p>
 
     <p class="hero-desc">
-      The same cloud-native approach that powers your Bluefin desktop — image-based, auto-updating, zero maintenance — now for the servers in your closet. One management suite for every node, every service, and every container you run at home. The nicest dashboards.
+      One management suite for every service and container you run at home. Image-based, auto-updating, zero maintenance — for the servers in your closet.
+    </p>
+
+    <p class="hero-desc">
+      Digital sovereignty isn't just for nations. Do it in style, with the nicest dashboards.
     </p>
 
     <p class="hero-desc">

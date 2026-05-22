@@ -89,7 +89,7 @@ const clients: ClientCard[] = [
             <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
           </svg>
         </div>
-        <span class="brand-title">Extensible</span>
+        <span class="brand-title">Extend with Industry Standard Components</span>
       </div>
       <p class="features-desc">
         Everything is optional. Start with a blank OS and then bolt on what you need. System Extensions activate on boot and extend the core system as needed. Only use what you need. Start with a simple set of containers for a single homeserver or scale up to an entire self healing cluster for your self hosting needs. Over a decade of production use:
@@ -122,10 +122,10 @@ const clients: ClientCard[] = [
         <div class="icon-wrap">
           <IconCodeBraces />
         </div>
-        <span class="brand-title">AI Clients</span>
+        <span class="brand-title">Agent Endpoints</span>
       </div>
       <p class="features-desc">
-        Bring your own LLM. These clients wire into your infrastructure out of the box.
+        Bring your own LLM. Optimized for local workloads, clients wire into your infrastructure out of the box.
       </p>
 
       <div class="app-grid">
