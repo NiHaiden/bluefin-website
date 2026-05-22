@@ -112,7 +112,7 @@ watch(
           <a
             :href="key"
             :class="{ active: key === visibleSection }"
-            :aria-label="`Section ${link.name}`"
+            :aria-label="`Section ${t(link.name)}`"
             @click.prevent="scrollTo(key)"
           >
             <component :is="link.icon" v-if="link.icon" />
@@ -123,8 +123,8 @@ watch(
         <div
           class="section-indicator"
           :style="{
-            left: `${Math.max(0, (offset - 1) * 20)}%`,
-            opacity: visibleSection === 'null' ? 0 : 1,
+            left: `${Math.max(0, (offset - 1) * (100 / linksAmount))}%`,
+            opacity: !visibleSection ? 0 : 1,
             width: `${Math.round(100 / linksAmount)}%`,
           }"
         />
@@ -139,7 +139,7 @@ watch(
   top: 16px;
   left: 50%;
   transform: translateX(-50%);
-  width: clamp(600px, 85%, 1200px);
+  width: clamp(320px, 85%, 1200px);
   border: 1px solid var(--color-border-light);
   border-radius: 20px;
   background-color: rgba(var(--color-bg-rgb), 0.85);
@@ -322,7 +322,7 @@ watch(
 // Tablet
 @media (max-width: 996px) {
   .unified-navbar {
-    width: clamp(400px, 92%, 800px);
+    width: clamp(320px, 92%, 800px);
     padding: 10px 16px;
   }
 
