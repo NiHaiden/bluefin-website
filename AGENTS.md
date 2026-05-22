@@ -430,7 +430,26 @@ npm run lint:fix             # Lints and fixes issues in the project
 - 🌐 **vue-i18n is in LEGACY mode:** use `(i18n.global as any).locale = x` — NOT `.locale.value = x` (will silently no-op)
 - 📐 **TopNavbar uses `px` not `rem`** — site root font-size is 63.5% (~10 px base); pixel values in Navbar are intentional
 - 🔒 **Dakota page is `noindex` / unlisted** — intentionally hidden from search engines and nav; do not add to sitemap or main nav
+- 🔒 **Bluespeed page is `noindex` / unlisted** — same pattern as Dakota; `src/KnuckleApp.vue`, `bluespeed/index.html`, components at `src/components/knuckle/`
 - ✅ **Run `node tests/navbar-visual.mjs`** to validate navbar rendering against docs.projectbluefin.io (38 Playwright assertions)
+
+## Git / Fork Workflow
+
+**Fork setup:**
+```bash
+git remote add origin git@github.com:<your-fork>/website.git
+git remote add upstream git@github.com:projectbluefin/website.git
+git fetch upstream
+git checkout -b <feature-branch> upstream/main
+```
+
+**When ready to ship upstream:** provide compare URL for human review; never open PRs to `projectbluefin/*` directly.
+
+**Public asset fetches in Vue components** — MUST use `import.meta.env.BASE_URL` prefix, not absolute `/` paths, so fork preview and production both work:
+```ts
+fetch(`${import.meta.env.BASE_URL}knuckle-versions.json`) // ✅
+fetch('/knuckle-versions.json') // ❌ breaks on subpath deploy
+```
 
 ### Attribution Requirements
 
